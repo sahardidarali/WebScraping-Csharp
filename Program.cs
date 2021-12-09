@@ -41,8 +41,10 @@ namespace Automata_Updated_Project
             }
             var bookLinks = GetBookLinks(mainUrl);
             Console.WriteLine("Found {0} links", bookLinks.Count);
-            var books = GetBookDetails(bookLinks);
-            exportToCSV(books);
+            //var books = GetBookDetails(bookLinks);
+            var books = GetBookDetailsArray(bookLinks);
+
+            //exportToCSV(books);
         }
         // Parses the URL and returns HtmlDocument object
         static HtmlDocument GetDocument(string url)
@@ -109,20 +111,29 @@ namespace Automata_Updated_Project
             }
             return books;
         }
-        //static Array GetBookDetailsArray(List<string> urls)
-        //{
-        //    int[,] booksArray = new int[urls.Count, 2];
-        //    foreach (var url in urls)
-        //    {
-        //        HtmlDocument document = GetDocument(url);
-        //        var titleXPath = "//h1";
-        //        var descriptionXPath = "//article[contains(@class,\"product_page\")]/p";
-        //        for (int i = 0; i < booksArray.GetLength(0); i++)
-        //            for (int j = 0; j < booksArray.GetLength(1); j++)
-        //                booksArray[i,j]=[document.DocumentNode.SelectSingleNode(titleXPath).InnerText, document.DocumentNode.SelectSingleNode(descriptionXPath).InnerText];
-        //    }
-        //    return booksArray;
-        //}
+        static Array GetBookDetailsArray(List<string> urls)
+        {
+            string[,] booksArray = new string[urls.Count, 2];
+
+            int i = 0;
+            foreach (var url in urls)
+                {
+                    HtmlDocument document = GetDocument(url);
+                    var titleXPath = "//h1";
+                    var descriptionXPath = "//article[contains(@class,\"product_page\")]/p";
+                
+                    int j;
+                    for (j = 0; j < 1; j++)
+                    {
+                        booksArray[i, j] = document.DocumentNode.SelectSingleNode(titleXPath).InnerText;
+                    }
+                    booksArray[i, j] = document.DocumentNode.SelectSingleNode(descriptionXPath).InnerText;
+                    i++;
+                }
+            
+        
+            return booksArray;
+        }
         static void exportToCSV(List<Book> books)
         {
             using (var writer = new StreamWriter("./books.csv"))
