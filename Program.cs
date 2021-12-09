@@ -42,8 +42,14 @@ namespace Automata_Updated_Project
             var bookLinks = GetBookLinks(mainUrl);
             Console.WriteLine("Found {0} links", bookLinks.Count);
             //var books = GetBookDetails(bookLinks);
-            var books = GetBookDetailsArray(bookLinks);
-
+            var books= GetBookDetailsArray(bookLinks);
+            for (int i = 0; i < books.GetLength(0); i++)
+            {
+                for (int j = 0; j < books.GetLength(1); j++)
+                {
+                    Console.WriteLine("Books[{0},{1}] : " + books[i,j],i,j);
+                }
+            }
             //exportToCSV(books);
         }
         // Parses the URL and returns HtmlDocument object
@@ -111,7 +117,7 @@ namespace Automata_Updated_Project
             }
             return books;
         }
-        static Array GetBookDetailsArray(List<string> urls)
+         static string[,] GetBookDetailsArray(List<string> urls)
         {
             string[,] booksArray = new string[urls.Count, 2];
 
