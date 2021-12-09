@@ -16,7 +16,7 @@ namespace Automata_Updated_Project
         {
             string mainUrl = "http://books.toscrape.com/catalogue/category/books/";
             Console.WriteLine("Choose Category");
-            Console.WriteLine("Travel = 1 \nMystery = 2 \nHistorical Fiction = 3 \nSequential Art = 4 \nClassics = 5 ");
+            Console.WriteLine("Travel = 1 \nMystery = 2 \nHistorical Fiction = 3 \nSequential Art = 4 \nHistory = 5 ");
             int category=Convert.ToInt32(Console.ReadLine());
              switch (category)
             {
@@ -33,7 +33,7 @@ namespace Automata_Updated_Project
                     mainUrl = mainUrl + "sequential-art_5/";
                     break;
                 case 5:
-                    mainUrl = mainUrl + "classics_6/";
+                    mainUrl = mainUrl + "history_32/";
                     break;
                 default:
                     Console.WriteLine("Invalid");
@@ -149,7 +149,7 @@ namespace Automata_Updated_Project
             }
         }
 
-
+        
     }
 
 }
