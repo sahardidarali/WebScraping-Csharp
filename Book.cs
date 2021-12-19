@@ -8,7 +8,7 @@ namespace Automata_Updated_Project
 {
    public class Book
     {
-       public string Title { get; set; }
-      public  string Description { get; set; }
+       public string Word { get; set; }
+      public  string Sentence { get; set; }
     }
 }
