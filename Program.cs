@@ -188,7 +188,7 @@ namespace Automata_Updated_Project
             int temp = 0;
             var booksRegex = new List<Book>();
             MatchCollection matchedDesc;
-            Console.WriteLine("Enter book name to apply regex on");
+            Console.WriteLine("Enter Book Title");
             string bookName = Console.ReadLine().ToLower().Replace("()", " ");
             for (int i = 0; i<books.GetLength(0); i++)
             {
