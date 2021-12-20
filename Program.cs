@@ -7,13 +7,14 @@ using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Text;
 
 namespace Automata_Updated_Project
 {
     class Program
     {
         static void Main()
-        {            
+        {
             //var s = StopWords.GetStopWords("en");
             string mainUrl = "https://books.toscrape.com/index.html";
             string categoryUrl=GetCategory(mainUrl);
@@ -22,7 +23,7 @@ namespace Automata_Updated_Project
             else
             {
                 var bookLinks = GetBookLinks(categoryUrl);
-                if (bookLinks==null)
+                if (bookLinks.Count==0)
                 {
                     Console.WriteLine("Found {0} Books", bookLinks.Count);
                 }
@@ -167,20 +168,24 @@ namespace Automata_Updated_Project
                 int j;
                 for (j = 0; j < 1; j++)
                 {
-                    booksArray[i, j] = document.DocumentNode.SelectSingleNode(titleXPath).InnerText.ToLower().Replace("&39;", "'").Replace("&#39;", "'");
+                    booksArray[i, j] = Regex.Replace(document.DocumentNode.SelectSingleNode(titleXPath).InnerText, @"[^0-9a-zA-Z-. ']+", "").ToLower();
                 }
                 if (document.DocumentNode.SelectSingleNode(descriptionXPath) == null)
                 {
                     booksArray[i, j] = "No description";
+                   
                 }
                 else
                 {
-                    booksArray[i, j] = document.DocumentNode.SelectSingleNode(descriptionXPath).InnerText.ToLower();
-                    i++;
+                    
+                    booksArray[i, j] = Regex.Replace(document.DocumentNode.SelectSingleNode(descriptionXPath).InnerText, @"[^0-9a-zA-Z-. ']+", "");
                 }
+                i++;
             }
             PrintArray(booksArray);
-            ApplyRegex(booksArray);
+            //ApplyRegex(booksArray);
+            ApplyRegexAllBooks(booksArray);
+
         }
         //Applying regex on selected book
         static void ApplyRegex(string[,] books)
@@ -230,6 +235,44 @@ namespace Automata_Updated_Project
             }
 
         }
+        static void ApplyRegexAllBooks(string[,] books)
+        {
+            var booksRegex = new List<Book>();
+            MatchCollection matchedDesc;
+            for (int i = 0; i < books.GetLength(0); i++)
+            {
+                
+                    string bookName = books[i,0].Replace("()", " ");
+                    var newString = bookName.RemoveStopWords("en");
+                    string rr = Regex.Replace(newString, @"[():,#0-9]", "").Trim();
+                    string duplicatesRemoved = string.Join(" ", rr.Split(' ').Distinct());
+                    string[] titleSplit = duplicatesRemoved.Split(' ');
+                    string pattern;
+                    string desc = books[i, 1];
+                    for (int j = 0; j < titleSplit.Length; j++)
+                    {
+                        pattern = @"[^.]*" + titleSplit[j] + "[^.]*\\.";
+                        matchedDesc = Regex.Matches(desc, pattern, RegexOptions.IgnoreCase);
+                        for (int count = 0; count < matchedDesc.Count; count++)
+                        {
+                            var book = new Book
+                            {
+                                Word = titleSplit[j],
+                                Sentence = matchedDesc[count].Value
+                            };
+                            booksRegex.Add(book);
+                        }
+
+                    }
+                
+
+            }
+            ExportToCSV(booksRegex);
+
+
+
+        }
+
         static void ExportToCSV(List<Book> books)
         {
             using (var writer = new StreamWriter("./regx.csv"))
