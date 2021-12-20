@@ -168,7 +168,8 @@ namespace Automata_Updated_Project
                 int j;
                 for (j = 0; j < 1; j++)
                 {
-                    booksArray[i, j] = Regex.Replace(document.DocumentNode.SelectSingleNode(titleXPath).InnerText, @"[^0-9a-zA-Z-. ']+", "").ToLower();
+                    booksArray[i, j] = Regex.Replace(document.DocumentNode.SelectSingleNode(titleXPath).InnerText, @"[^0-9a-zA-Z-. ']+", "").ToLower().Replace("39", "'");
+                    //booksArray[i, j] = booksArray[i, j].Replace("39","'");
                 }
                 if (document.DocumentNode.SelectSingleNode(descriptionXPath) == null)
                 {
@@ -183,8 +184,14 @@ namespace Automata_Updated_Project
                 i++;
             }
             PrintArray(booksArray);
-            //ApplyRegex(booksArray);
-            ApplyRegexAllBooks(booksArray);
+            Console.WriteLine("Enter 0 to apply regex on all books and 1 for particular book");
+            int input=Convert.ToInt32(Console.ReadLine());
+            if (input==1)
+             ApplyRegex(booksArray);
+            else if(input == 0)
+                  ApplyRegexAllBooks(booksArray);
+            else
+                Console.WriteLine("Invalid Input");
 
         }
         //Applying regex on selected book
@@ -244,8 +251,8 @@ namespace Automata_Updated_Project
                 
                     string bookName = books[i,0].Replace("()", " ");
                     var newString = bookName.RemoveStopWords("en");
-                    string rr = Regex.Replace(newString, @"[():,#0-9]", "").Trim();
-                    string duplicatesRemoved = string.Join(" ", rr.Split(' ').Distinct());
+                    string regReplace = Regex.Replace(newString, @"[():,#0-9]", "").Trim();
+                    string duplicatesRemoved = string.Join(" ", regReplace.Split(' ').Distinct());
                     string[] titleSplit = duplicatesRemoved.Split(' ');
                     string pattern;
                     string desc = books[i, 1];
@@ -287,13 +294,14 @@ namespace Automata_Updated_Project
         {
             for (int i = 0; i<books.GetLength(0); i++)
             {
+                Console.WriteLine("**************************************************************************{0}*************************************************************************************", i);
+
                 int j = 0;
                 for ( j = 0; j<1; j++)
                 {
                     Console.WriteLine("Title : " + books[i, j]);
                 }
                 Console.WriteLine("Description : " + books[i, j]);
-
             }
         }
 
